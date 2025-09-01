@@ -28,4 +28,4 @@ Este es un desafío avanzado que requiere conceptos no cubiertos en esta guía d
     *   Ejecutar un contenedor desde la imagen descargada y verificar que la aplicación es accesible.
 7.  **Resultado Final:** Al finalizar, se debe poder acceder a la aplicación Laravel a través de una URL local (ej. `http://localhost:8080`) y demostrar el funcionamiento del CRUD.
 
-Este reto sirve como el siguiente paso natural en el aprendizaje de Docker, moviéndose de la gestión manual a la automatización y orquestación de aplicaciones complejas.
+
