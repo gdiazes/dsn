@@ -44,6 +44,62 @@ The following diagram illustrates the complete flow of a user request through th
                                          +-------------------------------------------------------------------------------------------------------------+
 ```
 
+---
+
+### **Project File Structure**
+
+```
+app_node/
+├── .git/
+├── models/
+│   └── pedido.js
+├── public/
+│   └── ... (static app files)
+├── routes/
+│   └── index.js
+├── .dockerignore         <- Exclusion file for Docker
+├── .env                  <- Configuration and secrets file
+├── app.js                <- Main Node.js application logic
+├── db.js                 <- Database connection logic
+├── docker-compose.yml    <- Multi-container application orchestrator
+├── Dockerfile            <- Recipe to build the application image
+├── package.json          <- Project manifest and dependencies
+├── package-lock.json
+└── wait-for.sh           <- Utility script for service synchronization
+```
+
+---
+
+### **Description of Key Files**
+
+Below is a detailed description of the purpose of each file that is fundamental to the containerization and orchestration of the project:
+
+*   **`Dockerfile`**
+    *   **Purpose:** It is the "recipe" for building the Node.js application's Docker image. It defines, step-by-step, the environment the application needs to run: the base operating system (`node:14`), the working directory, the installation of dependencies with `npm install`, and the final command to start the server.
+
+*   **`docker-compose.yml`**
+    *   **Purpose:** It is the "orchestra conductor" for the entire application. This declarative file tells Docker how to bring up and connect multiple containers (services). It defines:
+        1.  The application service (`nodejsavilcatoma`), specifying that it should be built from the `Dockerfile`.
+        2.  The database service (`db`), using a public Mongo image.
+        3.  The private network (`app-network`) that allows the two services to communicate securely.
+        4.  The volumes (`dbdata` and `node_modules`) to persist data and optimize development.
+
+*   **`.env`**
+    *   **Purpose:** It stores environment variables, especially secrets like usernames and passwords. By keeping this information out of the code and Docker files, the application becomes more secure and portable. `docker-compose.yml` reads this file to inject the values into the corresponding containers.
+
+*   **`.dockerignore`**
+    *   **Purpose:** It works similarly to a `.gitignore` file. It tells Docker which files and folders from the project directory to ignore during the image build process. This is crucial for preventing secrets (`.env`) or large, unnecessary folders (`node_modules`, `.git`) from being copied into the image, keeping it lightweight and secure.
+
+*   **`wait-for.sh`**
+    *   **Purpose:** It is a utility script that solves a synchronization problem. It ensures that the Node.js application container waits for the database container to be fully ready and accepting connections before attempting to start the server. This prevents connection errors during the initial startup of the environment.
+
+*   **`app.js` (Modified)**
+    *   **Purpose:** It is the main entry point for the Node.js server. It is modified so that the port it listens on is not hardcoded, but instead is read from an environment variable (`process.env.PORT`), which allows Docker to manage port mapping flexibly.
+
+*   **`db.js` (Modified)**
+    *   **Purpose:** It contains the logic for connecting to the MongoDB database. It is modified to read all connection parameters (host, user, password, etc.) from environment variables, completely decoupling the application from its database configuration.
+
+
 #### **Prerequisites**
 *   VMware Workstation (or another hypervisor) with an Ubuntu Server 24.04.3 LTS Virtual Machine installed and configured with a Bridged Mode network.
 *   Terminal access to the VM with `sudo` privileges.
