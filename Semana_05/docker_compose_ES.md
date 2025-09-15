@@ -1,3 +1,4 @@
+
 ### **Guía de Laboratorio: Contenerización de una Aplicación Node.js y MongoDB con Docker Compose**
 
 #### **Objetivos del Laboratorio**
@@ -44,7 +45,27 @@ El siguiente diagrama ilustra el flujo completo de una petición del usuario a t
                                          |                                                                                                              |
                                          +--------------------------------------------------------------------------------------------------------------+
 ```
+### **Estructura de Archivos del Proyecto**
 
+```
+app_node/
+├── .git/
+├── models/
+│   └── pedido.js
+├── public/
+│   └── ... (archivos estáticos de la app)
+├── routes/
+│   └── index.js
+├── .dockerignore         <- Archivo de exclusión para Docker
+├── .env                  <- Archivo de configuración y secretos
+├── app.js                <- Lógica principal de la aplicación Node.js
+├── db.js                 <- Lógica de conexión a la base de datos
+├── docker-compose.yml    <- Orquestador de la aplicación multi-contenedor
+├── Dockerfile            <- Receta para construir la imagen de la aplicación
+├── package.json          <- Manifiesto del proyecto y dependencias
+├── package-lock.json
+└── wait-for.sh           <- Script de utilidad para sincronización de servicios
+```
 #### **Prerrequisitos**
 *   VMware Workstation (u otro hipervisor) con una Máquina Virtual de Ubuntu Server 24.04.3 LTS instalada y configurada con red en modo puente (Bridged Mode).
 *   Acceso a la terminal de la VM con privilegios `sudo`.
@@ -270,4 +291,6 @@ Antes de manipular la aplicación, se debe preparar la Máquina Virtual con toda
 #### **Conclusión**
 
 Mediante la ejecución de esta guía, se ha configurado un servidor, se ha construido y se ha desplegado una aplicación de dos niveles completamente contenerizada, estableciendo un entorno de desarrollo robusto, reproducible y aislado.
+
+
 
