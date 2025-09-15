@@ -45,6 +45,7 @@ El siguiente diagrama ilustra el flujo completo de una petición del usuario a t
                                          |                                                                                                              |
                                          +--------------------------------------------------------------------------------------------------------------+
 ```
+
 ### **Estructura de Archivos del Proyecto**
 
 ```
@@ -66,6 +67,37 @@ app_node/
 ├── package-lock.json
 └── wait-for.sh           <- Script de utilidad para sincronización de servicios
 ```
+
+---
+
+### **Descripción de Archivos Clave**
+
+A continuación se detalla el propósito de cada uno de los archivos que son fundamentales para la contenerización y orquestación del proyecto:
+
+*   **`Dockerfile`**
+    *   **Propósito:** Es la "receta" para construir la imagen Docker de la aplicación Node.js. Define paso a paso el entorno que necesita la aplicación para ejecutarse: el sistema operativo base (`node:14`), el directorio de trabajo, la instalación de dependencias con `npm install` y el comando final para iniciar el servidor.
+
+*   **`docker-compose.yml`**
+    *   **Propósito:** Es el "director de orquesta" de toda la aplicación. Este archivo declarativo le dice a Docker cómo levantar y conectar múltiples contenedores (servicios). Define:
+        1.  El servicio de la aplicación (`nodejsavilcatoma`), especificando que debe construirse a partir del `Dockerfile`.
+        2.  El servicio de la base de datos (`db`), usando una imagen pública de Mongo.
+        3.  La red privada (`app-network`) que permite a los dos servicios comunicarse de forma segura.
+        4.  Los volúmenes (`dbdata` y `node_modules`) para persistir datos y optimizar el desarrollo.
+
+*   **`.env`**
+    *   **Propósito:** Almacena variables de entorno, especialmente secretos como nombres de usuario y contraseñas. Al mantener esta información fuera del código y de los archivos de Docker, la aplicación se vuelve más segura y portable. `docker-compose.yml` lee este archivo para inyectar los valores en los contenedores correspondientes.
+
+*   **`.dockerignore`**
+    *   **Propósito:** Funciona de manera similar a un `.gitignore`. Le indica a Docker qué archivos y carpetas del directorio del proyecto debe ignorar al momento de construir la imagen. Esto es crucial para evitar copiar secretos (`.env`) o carpetas pesadas e innecesarias (`node_modules`, `.git`) dentro de la imagen, manteniéndola ligera y segura.
+
+*   **`wait-for.sh`**
+    *   **Propósito:** Es un script de utilidad que resuelve un problema de sincronización. Asegura que el contenedor de la aplicación Node.js espere a que el contenedor de la base de datos esté completamente listo y aceptando conexiones antes de intentar iniciar el servidor. Esto previene errores de conexión durante el arranque inicial del entorno.
+
+*   **`app.js` (Modificado)**
+    *   **Propósito:** Es el punto de entrada principal del servidor Node.js. Se modifica para que el puerto en el que escucha no esté fijo en el código, sino que se lea de una variable de entorno (`process.env.PORT`), lo que permite a Docker gestionar el mapeo de puertos de forma flexible.
+
+*   **`db.js` (Modificado)**
+    *   **Propósito:** Contiene la lógica para conectarse a la base de datos MongoDB. Se modifica para leer todos los parámetros de conexión (host, usuario, contraseña, etc.) desde variables de entorno, desacoplando completamente la aplicación de su configuración de base de datos.
 #### **Prerrequisitos**
 *   VMware Workstation (u otro hipervisor) con una Máquina Virtual de Ubuntu Server 24.04.3 LTS instalada y configurada con red en modo puente (Bridged Mode).
 *   Acceso a la terminal de la VM con privilegios `sudo`.
