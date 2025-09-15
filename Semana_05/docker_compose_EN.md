@@ -27,8 +27,8 @@ The following diagram illustrates the complete flow of a user request through th
 |                                |------>|       ^                  | |                       DOCKER NETWORK: app-network                        |  |  |
 +--------------------------------+ Request       | Port             | |                     (Isolated Subnet: 172.20.0.0/16)                     |  |  |
          to http://192.168.1.100:3000    |       | Mapping          | |                                                                          |  |  |
-                                         |       |                  | | +--------------------+  DB Connection   +--------------------+         |  |  |
-                                         |       +----------------->| | | CONTAINER:         | <--------------> | CONTAINER:         |         |  |  |
+                                         |       |                  | | +--------------------+  DB Connection   +--------------------+           |  |  |
+                                         |       +----------------->| | | CONTAINER:         | <--------------> | CONTAINER:         |           |  |  |
                                          |                          | | | nodejs_app         | (Host: 'db')     | mongodb_db         |           |  |  |
                                          |                          | | | IP: 172.20.0.2     | Port: 27017      | IP: 172.20.0.3     |           |  |  |
                                          |                          | | | Int. Port: 8080    |                  | Int. Port: 6379    |           |  |  |
